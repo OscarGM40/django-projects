@@ -1,0 +1,79 @@
+				ERA APLICACIÓN DJANGO -GENERADOR CONTRASEÑAS BY FAZT
+
+Source: https://www.youtube.com/watch?v=I0m92SBfDI8
+
+Primero hay que instalar Python y pip,puedo ver si lo tengo instalado y su versión con:
+>python --version 
+>pip --version
+
+Es muy recomendado utilizar un entorno virtual,si bien se pueden usar varios módulos como conda o pipenv vamos a usar virtualenv.Si no lo tuviera loinstalo:
+>pip install virtualenv (recuerda pip list para listar los pkg)
+
+					CREAR UN ENTORNO VIRTUAL-DESPLAZARSE
+
+Para crear un entorno virtual lo hago con la flag -m para pasarle el modulo que quiero usar al interprete(hacerlo en la carpeta del proyecto):
+>mkdir folder && cd folder
+>python - m virtualenv venv (python --module moduleName VenvName)
+
+Ahora hay que ejecutar el script 'activate' ,está en venv/bin/activate
+>source venv/bin/activate 
+Una vez activo lo veré en el prompt(recuerda deactivate para salir).Ya puedo instalar lo que desee que se instalará sólo para ese entorno/proyecto.Asi pues instalamos django:
+(venv)>pip install django
+Una vez instalado el framework puedo hacer uso de su CLI:
+
+		CREAR PROYECTO DJANGO-SETTINGS-URLS Y MODULOS/APPS
+
+Para ver todos los comandos simplemente tipeo 'django-admin':
+>django-admin
+Entre toda la salida veré 'startproject' que es para iniciar un proyecto(fijate en startapp,migrate,
+Asi pues iniciamos un proyecto 
+
+(venv)>django-admin startproject password_generator . <- el punto para que no cree otra carpeta(no acepta guiones medios)
+Esto creará el folder que se le dé como argumento en la ubicación actual,en el cual están archivos como el urls.py o el settings.py.Aparte crea el archivo de arranque manage.py.
+
+Dentro del settings,py tengo configuraciones como ALLOWED_HOSTS = [] o DEBUG = True, TEMPLATES(por defecto ya está DjangoTemplate) o DATABASES para agregar una DB(por defecto se conecta a SQLite.
+En INSTALLED_APPS tendré que declarar cada nueva app que agrege,si no Django no tendrá visión sobre ella.
+
+El urls.py es muy importante,es donde voy a crear las urls(el Router de Django).TAmbién especicaré que funciones se ejecutan en cada ruta.
+
+Para arrancar el servidor web embebido
+>python manage.py runserver
+
+En Django se crean aplicaciones.Son como dividir el proyecto en distintas partes,por ejemplo admin,blog,portfolio.Las apps es como dividir un proyecto en múltiples partes,y es un concepto core de Django.
+
+El conjunto de apps conformará el proyecto(parece que es más bien como admin,frontend,etc,no se crearán muchas).Nosotros crearemos sólo una para este proyecto:
+>python manage.py startapp generator
+
+Realmente no se usa la carpeta resultante del comando django-admin startproject folder . <- esa carpeta es como la configuración de todo el proyecto.Hay que crear mínimo una app.
+Recuerda que cada app que se cree hay que declararla en el settings.py.
+
+					CREAR RUTAS Y SUS CONTROLADORES
+
+Los controladores van en el views.py de cada 'app'/modulo que cree.Despues tengo que crear la ruta en el archivo general urls.py(fijate que se importa con from app import file, sin extensión,porque es un .py).Cada ruta es una llamada al método path(ruta,controlador,renombramiento):
+
+* En el urls.py
+from generator import views
+
+urlpatterns = [
+  path('about',views.about,name="about),
+  path('...',controlador,name="..."),
+
+Recuerda que no es obligatorio renombrar la url.En el views.py tendrá que haber un método controlador llamado about:
+
+*En el views.py del modulo generator
+from django.http import HttpResponse
+
+def about(request):
+  return HttpResponse('<h1>About</h1>')
+
+Fijate que hay que parsear la respuesta con el método HttpResponse,incluso si es una simple tag.Claro que esto no es eficiente,para ello está DjangoTemplate,su propio gestor de plantillas de servidor.
+
+						DJANGO TEMPLATES
+
+El framework proporciona su propio motor de plantillas.Para empezar a usarlas hay que crear el folder 'templates' en cada 'app',en la raiz.Alli ya puedo crear cualquier file con extensión .html.Para devolver estas plantillas hay que usar el método render.
+
+from django.shorcuts import render
+
+def about(request):
+  return render(request,'about.html')
+minuto 26
