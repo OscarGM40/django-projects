@@ -76,4 +76,43 @@ from django.shorcuts import render
 
 def about(request):
   return render(request,'about.html')
-minuto 26
+
+NOTA: una URL siempre es un string,siempre me va a devolver un string.
+En Django puedo acceder a cualquier valor en el objeto request(en la petición) con request.GET.get(string) o request.POST.get(string) etc.Siempre recogeré un string,asi que habrá que parsearlo como en este caso que queremos un Number:
+
+def password(request):
+   characters = list('abcdefghijklmnopqrstuvwxyz')
+   generated_password = ''
+   
+   length = int(request.GET.get('length')) <- recogo un valor de un name de un control que va por GET
+   
+   for char in range(0,length,1):
+      generated_password += random.choice(characters)
+   # fijate que debo devolver un diccionario con los pares de valores que desee a la template
+   return render(request,'generator/password.html',{'password': generated_password})
+En Django para pasar valores a la template van en tras la ruta a la template en un diccionario.Fácil.
+Despues en la template puedo inferirlos como en Angular con dobles llaves:
+<h1>Password</h1>
+{{password}}
+
+En cuanto a un campo tipo checkbox siempre me va a venir un value de on(ya que el de off no va a venir realmente).Ejemplo de una recepción de un checkbox desde un input con name="uppercase" y otro con name="length":
+http://127.0.0.1:8000/password/?length=6&uppercase=on
+
+Con esto en mente en el controlador podemos ver si viene este campo y extender la lista antes de iterar para almacenar la contraseña:
+
+ if(request.GET.get('uppercase')):
+      characters.extend(list('ABCDEFGHIJKLMNOPQRSTUVWXYZ')) 
+
+
+
+						FORMULARIOS EN DJANGO
+
+Recuerda que un formulario,mientras no se especifique otra cosa va a ir por GET a la misma URL.Si quiero que vaya a otra ruta tengo que usar la propiedad 'action':
+<form>
+... 
+</form> <- este form va a ir por GET a la misma url al hacer submit
+
+Si por ejemplo quiero que vaya a /password ( tendré que crear esa template,esa url y el controlador) simplemente uso action="password" en el form.
+
+NOTA:fijate que cuando mando un formulario por GET van a venir los atributos names de los controles junto con su value.Asi pues,si creo un <select name="length" junto con un input name="uppercase"  me va a venir ?length=5&uppercase=value.
+
