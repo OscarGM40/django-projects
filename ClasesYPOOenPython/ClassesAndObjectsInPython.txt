@@ -48,6 +48,83 @@ __len__: es llamado cuando el objeto es pasado a la funcion len()
 __abs__: es llamado cuando un objeto es pasado a la función abs()
 Realmente no es nada complejo esto.Obviamente el más usado es __init__
 
+NOTA: normalmente las clases no llevan atributos en Python,sino que los lleva el constructor mediante el dunde __init__.Interesante.
 
+# con este dunder puedo sobrescribir lo que devuelva la ejecución de len()
+  def __len__(self):
+    return 53
 
+# dado que sobreescribí el dunder __len__ dará 53
+print(len(monster_01)) <- obviamente devuelve 53
 
+IMPORTANTE: puedo ver todos los dunder methods que tiene un objeto usando el método dir.Esto es aplicable a todo objeto y realmente útil.Además,despues de los dunder también dice los campos de clase:
+
+print(dir(monster_01))
+['__class__', '__delattr__', '__dict__', '__dir__', '__doc__', '__eq__', '__format__', '__ge__', '__getattribute__', '__gt__', '__hash__', '__init__', '__init_subclass__', '__le__', '__len__', '__lt__', '__module__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', '__weakref__', 'attack', 'energy', 'health', 'move', 'name']
+
+Fijate como tengo varios,incluso tengo __dir__ para poder sobrescribir esto jaja.El dunder __eq__ o __dict__ son muy interesantes
+Incluso hay un dunder para poder ejecutar una instancia como si fuera un método:
+def __call__(self):
+  print('The monster was called')
+
+monster_01() <- fijate que estoy llamando a la instancia con ()
+
+Lo mismo para __add__:
+# puedo sobrescribir lo que hará sumar algo sobre el objeto
+  def __add__(self,other):
+    return f'the monster healths in {other} quantity.Now is health is {self.health + other}'
+
+IMPORTANTE: obviamente los más usados son __init__ y __str__ ,el cual en teoria imprime info sobre el objeto de una forma presentable(a no ser que se sobrescriba,claro):
+
+ def __str__(self):
+    return f'Hi!: I am the monster {self.name} with {self.health} of health'
+
+Igual que en Java,por defecto se llama a éste método:
+print(monster_01)
+Aunque también lo puedo usar:
+print(str(monster_01))
+Sin sobrescribirlo da la dirección a memoria,que realmente no me vale para mucho.
+
+						CLASSES IN DEEP
+
+En Python todo es un object(y en Ruby),incluido los inbuilt strings,los integers,incluso las funciones son objetos(con lo que serán instancias de una clase Function o algo)
+Recuerda también que un método pertenece a un objeto(da igual si el objeto lo creó Python)
+Con todo esto en mente,en Python puedo hacer cosas como:
+'casa'.upper() <- llamar a un método sobre el string inmediatamente(ya que es un object)
+len('test') | len([1,2,3]) | len({a:1,b:2}) | len((1,3,2)) <- llamar a un método casi con cualquier tipo de objeto,ya que todo es un object
+NOTA: (1,2,3) es una tupla y [1,2,3] es una lista.
+En Python está el unpacking(destructuring de JS):
+(a,b,c) = ('asinto','perez','alonso') 
+
+Destacar también que en Python puedo almacenar en una variable/propiedad un método(ya que el método es un objeto).Esto me permite almacsenar en una propieda un método de otra clase:
+
+# create a Monster class with a parameter called func,
+class Monster:
+    def __init__(self, func):
+        self.func = func
+
+# create a class called Attacks,that has 4 methods: bite,strike,slash and kick(they just print some str)
+class Attacks:
+    def bite(self):
+        print('bitting...')
+    def strike(self):
+        print('striking...')
+    def slash(self):
+        print('slashing...')
+    def kick(self):
+        print('kicking...')
+
+attacks = Attacks()
+# fijate como acepta cualquier cosa como parametro de clase Python
+monster = Monster(attacks.bite)
+# realmente no tengo porque instanciar Attacks,lo puedo pasar a un Objeto llamando,ya que una Class tiene el método __call__
+monster2 = Monster(Attacks().bite) # forma PRO TOTAL
+# y llamo al método,muy asinto todo
+monster.func()
+
+Fijate en la forma PRO de pasar una clase a objeto simplemente llamandola,ya que tiene el dunder __call__ por ser una Class.
+
+					CLASSES AND THE SCOPE OF THEM
+
+Todo método tiene una referencia a la clase donde vive.Por ello es muy fácil obtener y cambiar atributos de clase(getter an setters)
+Minuto 59
