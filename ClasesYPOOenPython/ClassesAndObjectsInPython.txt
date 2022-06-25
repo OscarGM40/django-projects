@@ -1,0 +1,53 @@
+				POO EN PYTHON - TUTORIAL BY CLEARCODE
+
+Source: https://www.youtube.com/watch?v=_vr5faCXFo8
+
+				¿QUE ES UN OBJETO?
+
+Un object podría decirse que es sólo un contenedor para variables(propiedades,atributos) y funciones(comportamientos como atacar,moverse,...)
+
+Es totalmente posible tener varios objetos,cada uno con valores diferentes para sus propiedades,pero los métodos si que serán los mismos,ya que son objetos de una misma clase y comparten comportamiento.Sin embargo,cada método está ligado al objeto,y puede recibir argumentos con valores diferentes por cada objeto.Si que serán los mismos,pero se comportarán diferente también.
+Asi pues,cada objeto es totalmente diferente en comportamiento y valores.
+
+Además,cada objeto puede interactuar con otro objeto.Todo esto son las bases de la POO,hoy en dia es indispensable conocerla.
+
+				OBJETS AS PROPERTIES OF ANOTHER OBJECT
+
+TIP: un objeto puede tener una propiedad que sea otro objeto.Este concepto es clave para crear código mantenible y escalable:
+
+class Menu():
+  player = Player() <- la clase Menu tiene la propiedad player de tipo Player(la cual es un objeto y me da un total control sobre las clases Menu y Player
+
+				¿QUE ES UNA CLASE?
+
+Un clase,por el contrario,es el plano para crear objetos.Siempre que quiera crear un objeto,necesitaré una Clase.
+Una clase también acepta argumentos para customizar el objeto que crea.Por ejemplo,podría establecer la health y energy de cada Monster:
+
+class Monster():
+  def __init__(self,health,energy):
+    self.health = health
+    self.energy = energy
+  def attack(self):
+    pass
+  def move(self):
+    pass
+
+Ahora,al crear un objeto de clase Monster le puedo pasar valores:
+monster1 = Monster(100,20)
+monster2 = Monster(90,15)
+
+Una clase también puede heredar de otra.Los objetos creados de esta clase tendrán los atributos y métodos de las dos clases.
+Usar POO me permite organizar código complejo,además de hacerlo reusable.Además,muchas librerias me obligarán a usar clases.También me permiten cambiar el scope de propiedades o métodos,lo cual es muchas veces obligatorio o simplemente conveniente.
+
+				__DUNDER__ METHODS - DOUBLE UNDERSCORE METHODS
+
+Ojo,dunder stands for DoubleUNDERscore,es la unión de la D y de UNDER,no tiene nada que ver con la palabra DUNDER.Cualquier método que use dobles guiones bajos es un DUNDER METHOD.
+IMPORTANTE: un Dunder Method es un método que no es callable por el user,sino que lo llama el programa cuando suceda algo en concreto(siempre habrá un disparador pues del dunder method).Por ejemplo:
+__init__ : es llamado cuando un objeto es construido
+__len__: es llamado cuando el objeto es pasado a la funcion len()
+__abs__: es llamado cuando un objeto es pasado a la función abs()
+Realmente no es nada complejo esto.Obviamente el más usado es __init__
+
+
+
+

@@ -103,6 +103,40 @@ Con esto en mente en el controlador podemos ver si viene este campo y extender l
  if(request.GET.get('uppercase')):
       characters.extend(list('ABCDEFGHIJKLMNOPQRSTUVWXYZ')) 
 
+			HERENCIA E INCLUDE EN LAS TEMPLATES
+
+DjangoTemplates permite crear un layout padre y herencia entre templates.Normalmente se le llama layout.html al template padre.
+NOTA:si no lo creo el browser por defecto va a crear las etiquetas <html> <head> y <body> pero estarán vacias.Debo crear una plantilla principal para linkear CDNs,configurar las etiquetas <meta>,etc...
+
+Para especificar en la template principal la zona donde van a ir los hijos se usa{% block content %}{% endblock %}.Ejemplo:
+ 
+<body>
+  {% block content %}
+  {% endblock %}
+</body>
+
+Ahora hay que ir a cada template hija y heredar con {% extends 'path' %}:
+{% extends 'generator/layout.html' %}
+{% block content %}
+<form> 
+...
+</form>
+{% endblock %}
+También hay que usar las dos mismas que se usaron en el padre aparte de la que se usa para heredar.Ahora todas las templates comparten la template principal,y cualquier CDN,script,etc...
+
+Cada plantilla también puede incluir otras,por ejemplo,la plantilla padre puede incluir la barra de navegación y por ende todas las plantillas que hereden esta plantilla incluirán la barra de navegación.
+{% include 'path' %}
+
+				NAVEGACION EN DJANGO TEMPLATES
+
+Puedo navegar usando las <anchor> de html de forma normal:
+ <a class="nav-link" href="/about">About</a>
+Pero también puedo navegar hacia un alias de una ruta que defina en el urls.py:
+  path('about/', views.about, name='about'),
+  path('', views.home, name='home'),
+Teniendo estos dos alias about y home para / puedo usar:
+  <a class="nav-link" href="{% url 'home' %}">Home</a>
+  <a class="nav-link" href="{% url 'about' %}">About</a>
 
 
 						FORMULARIOS EN DJANGO
@@ -115,4 +149,12 @@ Recuerda que un formulario,mientras no se especifique otra cosa va a ir por GET 
 Si por ejemplo quiero que vaya a /password ( tendré que crear esa template,esa url y el controlador) simplemente uso action="password" en el form.
 
 NOTA:fijate que cuando mando un formulario por GET van a venir los atributos names de los controles junto con su value.Asi pues,si creo un <select name="length" junto con un input name="uppercase"  me va a venir ?length=5&uppercase=value.
+
+Una URL puede llevar un alias(con la propiedad name),puedo apuntar a ese alias y Django resolverá ese alias:
+<form action="{% url 'password' %}" > <- apunta a 'password'
+En urls.py:
+ path('generate-password/', views.password, name='password') <- lo que use el alias 'password' realmente va a ir a la ruta /generate-password
+Django permite identificar una ruta por su nombre o por un alias.
+
+
 

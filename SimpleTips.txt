@@ -1,0 +1,110 @@
+					SIMPLE TIPS FOR PYTHON
+
+Source: https://www.youtube.com/watch?v=ESTf0ut14N0&ab_channel=ClearCode
+
+UNO - MATCH CASE
+match case es una forma rápida de comprobar si una variable tiene un determinado valor.Por ejemplo,tengo una variable 'a' y quiero saber si vale 0,1,2,3 ó 4.Cualquier beginner seguramente haría esto:
+
+a = 2
+
+if a == 0:
+  print('0')
+elif a == 1:
+  print('1')
+elif a == 2:
+  print('2')
+
+Si bien técnicamente esto es correcto no es muy elegante.Python tiene una forma más elegante de realizar esto, se llama match case(es como un switch case,pero en vez de usar la keyword switch se usa match).
+
+  match a:
+    case 0: print('0')
+    case 1: print('1') ...etc
+ 
+Un match/case siempre es más legible y elegante que muchos if/elif
+
+DOS - TERNARY OPERATOR
+Un operador ternario siempre es recomendable para expresiones lógicas sencillas:
+day_time = True
+
+* Un beginner haría esto
+if day_time:
+  greet = 'hello'
+else: 
+  greet = 'goodbye'
+
+Pero un auténtico pytonista haría esto:
+greet = 'hello' if day_time else 'goodbye'
+Normalmente va en un format string directamente,sin asignarlo:
+print(f"The option is: {'hello' if day_time else 'not-hello'}")
+Fijate que es la versión de un ternario con ?: en Javascript o Java.Fijate también que tengo que usar comillas simples y dobles o no se interpretará bien
+Fijate también que es realmente útil,y que debería ser algo básico para mi
+
+TRES - CHAIN COMPARISONS
+Si tuviera el caso de tener que comparar si un valor está entre otros dos
+
+min_value = 5
+max_value = 10
+value = 7
+
+* Esto es correcto,pero puede llegar a ser poco legible
+if min_value < value and max_value > value:
+  print('value inside boundaries')
+Un truco es usar esta sintaxis:
+if min_value < value < max_value:
+  print('value inside boundaries')
+
+Por alguna razón casi nadie cubre esta opción,y mejora la legibilidad.Además,se puede hacer en cualquier lenguaje
+
+CUATRO - CLAMP SOME VALUES BETWEEN A MINIMUN AND A MAXIMUN
+¿Y que pasa si quisiera asegurarme que un valor nunca excede unos valores minimos y máximos?
+min_value = 0
+max_value = 100
+value = 50
+
+while True:
+  value += 0.001
+# esta sería la foma menos elegante de comprobar que value no baja de 0 ni sube de 100,pero realmente hay una mejor forma usando min y max
+ 
+  if value > max_value:
+    value = max_value
+  if value < min_value:
+    value = min_value
+  * Puedo sustituir las 4 lineas por esta
+  value = max(min_value,min(value,max_value))
+
+Me gusta mucho,muy útil y profesional.Además,se ve que es muy útil.
+
+CINCO evaluar y ejecutar
+La función inbuild eval() evalua algo.Es muy útil para debug y tests.Puede incluso realizar calculos matemáticos.Pero no puede asignar nuevos valores.Para esto se usa exec():
+
+test_string = 'hello'
+print(eval('test_string.upper()))
+> HELLO <- fijate que no muta la variable
+eval('test_string = "another thing"') <- error,no puede reasignar el valor
+exec('test_string="updated"') <- exec si lo cambia
+print(test_string < dará "updated"
+
+Sin embargo,esto no se suele usar,pero lo que si que puedo hacer cuando quiera ejecutar varios métodos sobre alguna instancia es usar eval():
+# en vez de 
+print(test_string.upper())
+print(test_string.lower())
+print(test_string.casefold())
+print(test_string.title())
+# puedo usar una tupla para pasarle los métodos a eval()
+for operation in ['upper', 'lower','casefold','title']:
+    print(f"{operation}: {eval(f'{operation}(test_string)')}")
+# aunque obviamente es algo que no usaré mucho
+
+# 6 - dict.get(): Realmente no se suele saber las keys de un diccionario/map de antemano.Puedo usar dict.get(key) para que no pete cuando intente acceder al valor de una key que no existe
+
+test_dict = {'a':1,'b':2,'c':3}
+if test_dict.get('d') is None:
+    print('d is not in the dict')
+
+# list flattening with sum() Imagina una tupla que tenga otras tuplas en su interior,y quiero sacarla a una tupla de 1 dimensión(flatMap de Javascript)
+test_list = [1,2,3,[4,5,6],[7,8]] 
+# en python en vez de flatMap puedo usar sum(2Dlist,[]) pasandole una tupla vacia.Lamentablemente sólo funciona para arrays de 2D
+print(sum(test_list,[]))
+
+Esto funciona bien porque en Python si sumo dos tuplas las mergeo:
+[1,2,3] + [4,5,6] será = [1,2,3,4,5,6]
