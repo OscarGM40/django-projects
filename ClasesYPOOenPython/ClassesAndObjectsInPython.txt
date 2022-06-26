@@ -127,4 +127,138 @@ Fijate en la forma PRO de pasar una clase a objeto simplemente llamandola,ya que
 					CLASSES AND THE SCOPE OF THEM
 
 Todo método tiene una referencia a la clase donde vive.Por ello es muy fácil obtener y cambiar atributos de clase(getter an setters)
-Minuto 59
+Debido a esto los métodos no necesitan tanta ayuda de los parámetros,de global o de un return(aunque los puedo usar)
+Los objects pueden ser influenciados desde el exterior, o desde el scope local de una funcion.Es decir,los objects en Python no están limitados por el scope local
+Veamoslo en código mejor.
+
+Problema con el ámbito de las variables(que es local):
+def update_health(amount):
+   health += amount <- health tiene un scope local
+
+health = 10
+
+print(health) <- dará error pues health no está definido
+update_health(20)
+print(health)
+
+Solución,declararla global:
+def update_health(amount):
+  global health
+  health += amount
+
+SIN EMBARGO,LOS OBJETOS Y SUS ATRIBUTOS NO TIENEN UN SCOPE LOCAL,OJO
+# objects doesn't have local scope for their attributes
+def update_health_of_object(amount):
+    monster.health += amount
+
+class Monster:
+    def __init__(self, health, energy):
+        self.health = health
+        self.energy = energy
+
+monster = Monster(health=100, energy=50)
+update_health_of_object(20) <- monster.health tiene scope global
+print(monster.health)
+
+Desde luego es muy interesante que las instancias tengan un scope global para sus propiedades.Y debido a esto puedo crear métodos en la clase que hagan scope a cualquier propiedad,incluso puedo usar return si es necesario:
+
+  def __init__(self, health, energy):
+        self.health = health
+        self.energy = self.set_energy(energy)
+
+    def update_energy(self, amount):
+        self.energy += amount
+
+    def set_energy(self,energy):
+        new_energy = energy * 2
+        return new_energy
+
+TIP: fijate que en Python puedo pasarle arg = value o solo el value
+hero = Hero(damage = 10,monster = monster)
+Con esto terminamos con el scope,quedando bien claro que el scope de los atributos de una instancia es global,pero el de las variables sigue siendo local.Muy interesante.
+
+				INHERITANCE	+ (herencia múltiple | simple)
+
+La herencia es básicamente que una clase A pueda recibir todos los métodos y atributos(es decir,todo) de una clase B(al heredarla)
+
+Una clase puede heredar de un número ilimitado de clases(herencia múltiple) heredando asi todos los métodos y atributos de,por ejemplo, 3 clases más(aparte de los de ella)
+De la misma forma,una clase padre puede ser extendida por un numero ilimitado de subclases,no hay restricción en esto
+
+Por todo esto,la herencia puede llegar a ser muy compleja.Sin embargo,la mayoría de las veces me valdrá con la herencia simple(A hereda sólo de una clase)
+
+class Monster:
+    def __init__(self, health, energy):
+        self.health = health
+        self.energy = energy
+
+    def attack(self, amount, other):
+        print(f'The monster has attacked!')
+        print(f'{amount} damage was dealt')
+        other.health -= amount
+        self.energy -= 20
+
+    def move(self, speed):
+        print('The monster has moved')
+        print(f'It is moving at a speed of {speed}')
+
+
+class Shark(Monster):
+    def __init__(self, speed, health, energy):
+        super().__init__(health, energy)
+        self.speed = speed
+
+    def bite(self):
+        print(f'The shark has bitten')
+    # para sobrescribir un método simplemente lo llamo igual
+    def move(self):
+      print(f'The shark is moving at {self.speed} speed!')
+
+
+
+shark = Shark(30,100,100)
+shark2 = Shark(speed=30,health = 100,energy = 100)
+shark.attack(10,shark2)
+print(shark2.health)
+
+Fijate como para sobrescribir solo hay que llamar a un método de la subclase igual que el de la clase padre y lo sobrescribirá.
+Fijate también que si la clase padre llama al constructor con argumentos tengo que pasarlos desde la hija:
+
+class Shark(Monster):
+    def __init__(self, speed, health, energy):
+        super().__init__(health, energy)
+
+Otra forma,apuntando a una clase en concreto(aunque se suele usar super()).
+class Shark(Monster):
+    def __init__(self, speed, health, energy):
+       Monster.__init__(self,health, energy)
+
+En cuanto use herencia múltiple necesitaré la forma con super(),pero con herencia simple realmente puedo usar Class.__init__(self,*args).Sin embargo,como super tmb funciona con herencia simple no necesito usarla realmente.
+
+NOTA: realmente puedo usar super() para hacer más cosas,pues es simplemente una referencia al padre:
+super().move() <- puedo mover el padre
+super().health = -10 <- puedo quitarle salud,...etc
+
+No debo quedarme en que super se usa solo para pasar los args,es más que eso.
+
+class Scorpion(Monster):
+  def __init__(self,poison_dmg,scorpion_health,scorpion_energy):
+    self.poison_dmg=poison_dmg
+    super().__init__(scorpion_health,scorpion_energy)
+    
+  
+  def attack(self):
+    print(f'Scorpion attacking with an amount of {self.poison_dmg} poison damage')
+
+scorpion = Scorpion(50,100,30)
+## PUEDO SER MÁS CLARO CUANDO LO NECESITE ###
+scorpion = Scorpion(poison_dmg = 50,scorpion_health = 100, scorpion_energy = 30)
+scorpion.attack()
+scorpion.move(15)
+print(scorpion.energy)
+
+NOTA: fijate que es mejor ser especifico y llamar a los args scorpion_health o scorpion_energy en vez de health,ya que es muy abstracto ese nombre de variable
+Y de la misma forma es recomendable en los args decir a quien me estoy refiriendo
+
+				COMPLEX INHERITANCE
+
+
