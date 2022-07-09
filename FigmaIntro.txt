@@ -1,0 +1,17 @@
+							UI/UX DESIGN INTRO
+
+Video: https://www.youtube.com/watch?v=c9Wg6Cb_YlU&ab_channel=freeCodeCamp.org
+
+Figma es una herramienta colaborativa para diseñadores gráficos.Tiene un tier gratuito.
+
+Boton con icono de flecha: Mover con la V,escalar con la K
+Siguiente boton(icono numeral): crear un Frame con la F, Slice(recortar) con la S
+Boton Icono Rectangle: boton para crear Shapes(Rectangle,Line,Arrow,Ellipse,Polygon,Star,o imagenes externas).Obviamente lo usaré mucho
+Boton Pencils(Icono Pluma): diferentes Boligrafos
+Boton Text(Icono T): Para insertar Texto
+Los dos últimos son la mano,para pasar al modo Hand(con la H,otro muy útil) y el bocadillo para dejar notas colaborativas
+
+Empiezo con el Frame y eligo Desktop(1440).Esto no es importante,ya que vamos a cambiar el ancho inmediatamente a 1920(lo más normal).Como height tmb 1920,incluso puede que sea poco.
+
+
+TIP: puedo dejar caer cualquier cosa sobre Figma,como bocetos o imagenes,haciendo drag and drop

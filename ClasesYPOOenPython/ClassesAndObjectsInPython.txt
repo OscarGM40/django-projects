@@ -261,4 +261,109 @@ Y de la misma forma es recomendable en los args decir a quien me estoy refiriend
 
 				COMPLEX INHERITANCE
 
+Hasta ahora solo he visto herencia simple.Realmente una child class puede heredar de varias,haciendola superpoderosa.
+A la hora de mandar args a los padres tengo que tener en cuenta el MRO(Method Resolution Order).Incluso lo puedo imprimir:
+
+class Shark(Monster,Fish):
+  def __init__(self,bite_strength,health, energy,speed,has_scales):
+    super(Monster).__init__()
+    
+print(Shark.mro())
+
+El resultado es Shark,Monster,Fish y object(el cual no importa ahora)
+[<class '__main__.Shark'>, <class '__main__.Monster'>, <class '__main__.Fish'>, <class 'object'>]
+
+Obviamente coge el orden de los argumentos,estando Monster primero y aún antes la propia child class
+
+Y no sólo tengo que saber que la clase Monster va a llamar a Fish,sino que tendré que hacer uso de los **kwargs.
+NOTA: el operador ** mete en un diccionario llamado kwargs.Es el operador unpacking/packing.LLamarlo una vez empaqueta,volver a llamarlo desempaqueta.
+
+IMPORTANTE: **kwargs es un diccionario,en cuanto lo use tengo que pasar los argumentos asi(name = name,health = health).Como pares de key-value.Si no no los va a empaquetar
+
+
+class Monster:
+  def __init__(self, health, energy,**kwargs):
+    print(kwargs)
+    self.health = health
+    self.energy = energy
+    super().__init__(**kwargs)
+
+  def attack(self, amount, other):
+    print(f'The monster has attacked!')
+    print(f'{amount} damage was dealt')
+    other.health -= amount
+    self.energy -= 20
+
+  def move(self, speed):
+    print('The monster has moved')
+    print(f'It is moving at a speed of {speed}')
+
+class Fish:
+  def __init__(self, speed, has_scales,**kwargs):
+    print(kwargs)
+    self.speed = speed
+    self.has_scales = has_scales
+    super().__init__(**kwargs)
+
+  def swim(self):
+    print(f'The fish is swimming at a speed of {self.speed}')
+   
+   # mro stands for method resolution order 
+class Shark(Monster,Fish):
+  def __init__(self,bite_strength,health,energy,speed,has_scales):
+    self.bite_strength = bite_strength
+    super().__init__(
+      health=health,
+      energy=energy,
+      speed=speed,
+      has_scales=has_scales)
+    
+# print(Shark.mro())
+
+shark = Shark(
+  bite_strength = 50,
+  health = 250,
+  energy = 55,
+  speed = 120,
+  has_scales = True)
+shark.swim()
+
+Y por todo esto queda obvio que mucha gente llama a super.__init__() automáticamente y que en cuanto use herencia compuesta veré un montón de **kwargs por ahi.
+
+				EXTRA PARTS FOR CLASSES IN PYTHON
+
+PRIVATE ATTRIBUTES:es un simple atributo que no puede accesarse desde fuera de la clase.Por ejemplo un ID,que nunca deberia mutar.Para realizar esto se pone un underscore,pero realmente en Python no existe esto(siempre será público:
+class Monster:
+  def __init__(self, health, energy):
+    self.health = health
+    self.energy = energy
+    #private attributes
+    self._id = 5
+
+HASATTR y SETATTR
+hasattr(object,'attr') es igual que en JS el Object.hasOwnProperty('prop').Devuelve un boleano y es muy útil en condiciones por ello.
+if hasattr(monster,'health'): do ....
+En cuanto a setattr(object,'attr','value) permite reestablecer el valor de propiedades ya existentes en ese objeto o incluso crear otras:
+setattr(monster,'weapon','teeth')
+Si bien es lo mismo que hacer monster.weapon = 'teeth' es muy eficiente y útil,por ejemplo en bucles para insertar atributos masivamente : 
+new_attributes = (['weapon','Axe'],['armor','Shield'],['potion','mana'])
+for attr,value in new_attributes:
+  setattr(monster,attr,value)
+print(vars(monster))
+Obviamente no se usa mucho,pero es bueno conocerlo
+
+DOC: doc es un atributo dunder(__doc__) que en teoría explica qué hace la instancia.Por defecto siempre retorna un None,ya que hay que sobreescribirlo(es como el toString() de Java,etc)
+Para sobrescribirlo siempre es en la primera linea de una clase,entre triples comillas:
+class Monster:
+ '''A monster is an object that does nothing,really'''
+  ... more code ...
+
+monster = Monster()
+print(monster.__doc__) <- veré "A monster is an object ..."
+Se usa mucho en equipos de trabajo para explicar a otros dev que hace la clase.Perfecto.Desde luego, Python es genial para algunas cosas.
+
+Por último puedo imprimir la ayuda sobre un object con help(anything).Al loro con esto:
+help(monster) <- veo los dunder y más info útil.Imprescindible
+
+
 
