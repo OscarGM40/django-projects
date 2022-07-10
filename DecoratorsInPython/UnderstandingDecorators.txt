@@ -1,0 +1,118 @@
+					UNDERSTANDING DECORATORS
+
+Source: https://www.youtube.com/watch?v=nVdF7QT-Ggg&ab_channel=ClearCode
+
+Los decoradores son funciones que 'decoran' otras funciones.Básicamente se tratar de wrappear(englobar) una función con otra:
+
+decorator func <- funcion decoradora
+def func(): <- funcion normal
+  ...    el retorno puedo verlo como func(func())
+
+Entender que se retorna func( func() ) es importante ya que puedo ejecutar código antes y despues de la func() interna( es decir func(aqui func() y aqui) ).
+Esta caracteristica es muy importante,ya que me permite:
+1- añadir funcionalidad a la funcion interna sin mutarla
+
+Normalmente se usan decoradores en estas 3 circunstancias:
+1- Quiero testear mi código sin cambiarlo(la más común)
+2- En un ambiente colaborativo quiero evitar cambios innecesarios sobre la func
+3- los decoradores en clases me permiten ejecutar código cuando un atributo de la clase es accedido o cambiado(este es el caso más básico y menos avanzado,y por el que debo empezar).
+
+Si bien los decoradores son un concepto avanzado,son muy buenos para entender como pasar funciones mediante la sentencia RETURN
+
+CONCEPTO UNO,EJECUCION DE CODIGO ANTES Y DESPUES
+# funcion interna
+def func():
+  print('Wrapped function)
+
+# funcion wrapper(llevará una func como argumento)
+def wrapper(func)
+  print('hello')
+  func()
+  print('goodbye')
+
+Esto es un decorador,en su forma más básica
+
+CONCEPTO DOS,UNA FUNCION PUEDE RETORNAR OTRA PERFECTAMENTE
+def function_generator():
+  def new_function():
+    print('New function')
+  return new_function <- ojo que devuelve la referencia la exterior
+
+my_func = func()
+my_func() <-dado que devolví la referencia tengo que ejecutarla
+
+*Observa como una func devuelve otra.Estas dos basics son fundamentales.Avancemos.
+
+CONCEPTO TRES, COMBINAR EL UNO Y EL DOS MEDIANTE UN ARG DE TIPO FUNC
+Puedo tanto retornar una func dentro de otra como ejecutar código antes.Para ello la func exterior necesitará un arg y declarar una def interna.
+def decorator(func):
+  def wrapper():
+    print('decoration begins')
+    func()
+    print('decoration ends')
+  return wrapper
+
+func= decorator(func)
+func()
+* Fijate que esta vez ha habido tres funciones,la decorator,la wrapper y la ejecutada,mientras que en el concepto DOS sólo habia dos,ojo.
+
+IMPORTANTE: si además le llamo igual al retorno de ejecutar decorator(func) tendré una func llamada como la original,pero que realmente hace otra cosa totalmente diferente.Dado que esto es la forma normal de operar Python tiene un atajo para la sentencia func = decorator(func) y es usar @decorator
+
+@decorator <- decoro con la funcion llamada decorator a func
+def func():
+  print('Function')
+
+Recuerda @decorator es lo mismo que reasignar al nombre de la funcion otra funcion (func = decorator(func)).La función func mutará a lo que haga decorator(func)
+
+Fijate tmb que hay que sobrescribir la funcion original,usando el mismo nombre para almacenar la funcion decorada.
+
+						REUSABILIDAD
+
+Para darme cuenta de la reusabilidad de los decoradores puedo ver este ejemplo:
+
+import time
+
+def duration_decorator(func):
+  def wrapper():
+    start_time = time.time()
+    func()
+    duration = time.time() - start_time
+    print(f'duration: {duration}')
+ return wrapper
+
+@duration_decorator
+def another_func():
+  print('executing the inner func')
+
+Con tan solo una linea de codigo puedo mutar lo que iba a hacer another_func(y mantener lo que iba a hacer originalmente si no le pongo el decorador).Y puedo decorar cualquier funcion para ver cuanto tarda.
+Fijate en el uso tan fuerte que tiene esta simple operación como debugging function
+
+				COMBINAR DECORADORES
+
+Igual que puedo hacer wrapper1(wrapper2(func())) y englobar una func que llamará a otra que a su vez llamará a otra puedo simplificarlo con otro @decorator:
+
+@decorator
+@duration_decorator
+def another_func():
+  print('executing the inner func')
+
+Esto amplifica aún más la utilidad de esta feature.Fijate que se dispara la funcionalidad que tiene la func interna al ser decorada por otro decorador(es como una subclase que herede de dos superclases,pero en funciones). 
+
+Practica: crea otro decorador que ejecute una funcion dos veces:
+
+def twice_decorator(func):
+  def wrapper():
+    func()
+    func()
+  return wrapper
+
+@twice_decorator
+@decorator
+@duration_decorator
+def another_func():
+  print('executing the inner func')
+
+IMPORTANTE: la función wrapper realmente nunca sale de la decoradora externa,realmente la puedo llamar como quiera ya que su scope es local a esa func(aunque wrapper deja bastante claro lo que hace)
+En este punto queda bien claro la potencialidad de los decoradores en Python,pero aún falta mucho por ver,ya que pueden recibir argumentos,logicamente.
+
+				DECORADORES CON ARGUMENTOS
